@@ -1,5 +1,5 @@
-from src.constants import NOTES_DATA
-from src.schemas import CodeNote
+from constants import NOTES_DATA
+from schemas import CodeNote
 
 
 def get_notes() -> list[CodeNote]:
