@@ -1,0 +1,19 @@
+[tool.ruff]
+fix = true
+unsafe-fixes = true
+line-length = 120
+lint.select = ["ALL"]
+lint.ignore = ["D1", "D203", "D213", "FA102", "ANN101"]
+cache-dir = "/tmp/ruff-cache"
+
+[tool.ruff.lint.isort]
+section-order = ["standard-library", "third-party", "first-party", "local-folder"]
+lines-between-types = 1
+
+[tool.ruff.lint.extend-per-file-ignores]
+"tests/*.py" = ["ANN401", "S101", "S311"]
+
+[tool.mypy]
+plugins = "pydantic.mypy"
+strict = true
+ignore_missing_imports = true
