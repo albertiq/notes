@@ -2,8 +2,7 @@ TASK_SIGNATURE_STRATEGY_PATTERN = """
 class TaskSignature(ABC):
     @abstractmethod
     def get_signature(self, args: TaskArgsBase, signature: Signature) ->: group | Signature
-
-    pass
+        pass
 
 
 class ConcreteTaskSignature(TaskSignature):
@@ -45,7 +44,22 @@ class CeleryTaskCreator(ABC):
             task_signatures.append(task_sig)
         return group(task_signatures)
 """
+CELERY_WITH_REDIS_PATCH = """
+class CeleryClient(metaclass=Singleton):
+    def __init__(self) -> None:
+        # Использовать redis в качестве backend: https://github.com/celery/celery/pull/2204
+        self._celery = self.patch_celery().Celery(**config)
 
+    def patch_celery(self) -> None:
+        # https://github.com/celery/celery/issues/4834
+        def _unpack_chord_result(...):
+            ...
+
+    def get_celery(self) -> Celery:
+        return self._celery
+
+celery_client = CeleryClient().get_celery()
+"""
 NOTES_DATA: list[dict] = [
     {
         "name": "Celery task signature strategy",
@@ -54,5 +68,9 @@ NOTES_DATA: list[dict] = [
     {
         "name": "Celery task creator",
         "code_block": CELERY_TASK_CREATOR,
+    },
+    {
+        "name": "Celery client with redis patch",
+        "code_block": CELERY_WITH_REDIS_PATCH,
     },
 ]
