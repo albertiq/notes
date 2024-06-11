@@ -22,6 +22,9 @@ class Context:
 
     def get_signature(self, args: TaskArgsBase, signature: Signature):
         return self._task_signature.get_signature(args, signature)
+
+
+concrete_task_ctx = Context(ConcreteTaskSignature)
 """
 CELERY_TASK_CREATOR = """
 class CeleryTaskCreator(ABC):
