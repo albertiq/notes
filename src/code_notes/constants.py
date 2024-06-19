@@ -104,6 +104,29 @@ class TaskSender:
             self.priority,
         )
 """
+KAFKA_PRODUCER_INTERFACE = """
+class KafkaProducer(ABC):
+    def __init__(self, broker_host: str) -> None:
+        self.producer = Producer({"bootstrap.servers": broker_host})
+
+    @abstractmethod
+    def get_messages(self) -> list[dict]:
+        pass
+
+    def _exception_handler(self, _) -> None:
+        self.producer.poll(8)  # for clickhouse queue table (kafka_flush_interval param)
+
+    @backoff.on_exception(backoff.constant, BufferError, on_backoff=_exception_handler)
+    def produce(self, topic: str) -> None:
+        try:
+            messages = self.get_messages()
+            for message in messages:
+                self.producer.produce(topic, json.dumps(message, default=json_serial).encode("utf-8"))
+                self.producer.poll(0)
+            self.producer.flush()
+        except BufferError as err:
+            logger.exception("Buffer limit: %s", str(err))
+"""
 NOTES_DATA: list[dict] = [
     {
         "name": "Celery task signature strategy",
@@ -128,5 +151,9 @@ NOTES_DATA: list[dict] = [
     {
         "name": "Task sender",
         "code_block": TASK_SENDER,
+    },
+    {
+        "name": "Kafka producer interface",
+        "code_block": KAFKA_PRODUCER_INTERFACE,
     },
 ]
