@@ -31,5 +31,4 @@ jobs:
     - name: Run fastapi with fastui
       run: |
         cd src/code_notes
-        ls
-        # uvicorn main:app --host 0.0.0.0 --port 8000
+        uvicorn main:app --host 0.0.0.0 --port 8000
