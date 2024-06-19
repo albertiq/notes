@@ -31,4 +31,4 @@ jobs:
     - name: Run fastapi with fastui
       run: |
         cd src/code_notes
-        python -m uvicorn main:app
+        python -m uvicorn main:app &
