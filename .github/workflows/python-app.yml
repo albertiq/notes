@@ -30,4 +30,4 @@ jobs:
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Run fastapi with fastui
       run: |
-        python -m uvicorn src/code_notes/main:app
+        uvicorn src/code_notes/main:app --host 0.0.0.0 --port 80
