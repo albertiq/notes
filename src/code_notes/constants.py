@@ -63,6 +63,47 @@ class CeleryClient(metaclass=Singleton):
 
 celery_client = CeleryClient().get_celery()
 """
+CELERY_PRODUCER = """
+class CeleryProducer:
+    def send_task(self, task_name: str, priority: int, payloads: list[dict]) -> None:
+        for payload in payloads:
+            celery_client.send_task(task_name, payload, priority)
+
+    def send_chain_tasks(self, *tasks: group | Signature, priority: int) -> None:
+        celery_app = init_celery_app()
+        chain = celery.chain(*tasks)
+        chain.app.conf = celery_app.conf
+        chain.apply_async(priority)
+
+cp = CeleryProducer()
+"""
+INIT_CELERY_APP = """
+celery = None
+
+def init_celery_app() -> None:
+    global celery
+    celery_app = celery_client
+    celery_app.conf.task_queues = [queue1, queue2, ...]
+    celery_app.conf.broker_transport_options = {
+        "queue_order_strategy": "priority",
+        "priority_steps": list(range(10)),
+    }
+    celery_app.autodiscover_tasks(related_name="package.tasks_module", force=True)
+    celery = celery_app
+    return celery
+"""
+TASK_SENDER = """
+class TaskSender:
+    def __init__(self, task_signatures: tuple, priority: int) -> None:
+        self.task_signatures = task_signatures
+        self.priority = priority
+
+    def send_tasks(self) -> None:
+        celery_producer.send_chain_tasks(
+            *(sig for sig in self.task_signatures if sig),
+            self.priority,
+        )
+"""
 NOTES_DATA: list[dict] = [
     {
         "name": "Celery task signature strategy",
@@ -75,5 +116,17 @@ NOTES_DATA: list[dict] = [
     {
         "name": "Celery client with redis patch",
         "code_block": CELERY_WITH_REDIS_PATCH,
+    },
+    {
+        "name": "Celery producer",
+        "code_block": CELERY_PRODUCER,
+    },
+    {
+        "name": "Init celery app",
+        "code_block": INIT_CELERY_APP,
+    },
+    {
+        "name": "Task sender",
+        "code_block": TASK_SENDER,
     },
 ]
