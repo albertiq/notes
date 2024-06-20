@@ -4,7 +4,6 @@ from fastui import AnyComponent, FastUI, prebuilt_html
 from fastui import components as c
 from fastui.components.display import DisplayLookup
 from fastui.events import BackEvent, GoToEvent
-
 from schemas import CodeNote
 from service import get_notes
 
