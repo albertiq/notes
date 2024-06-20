@@ -21,7 +21,8 @@ jobs:
 
       - name: Build and copy static files
         run: |
-          python -c "import shutil; shutil.copytree('src/static', 'build/static')"
+          cp -R src/static build/
+          ls
 
       - name: Build FastAPI app
         run: |
