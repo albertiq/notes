@@ -26,7 +26,7 @@ jobs:
           uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload &
 
       - name: Deploy to GitHub Pages
-        uses: actions/github-pages@v2
+        uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          directory: build
+          publish_dir: ./build
