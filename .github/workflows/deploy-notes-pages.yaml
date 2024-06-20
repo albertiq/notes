@@ -12,7 +12,7 @@ jobs:
       contents: write
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v2
 
       - name: Install dependencies
         run: |
@@ -25,7 +25,7 @@ jobs:
 
       - name: Build FastAPI app
         run: |
-          uvicorn src.code_notes.main:app --host 0.0.0.0 --port 8000 --reload &
+          uvicorn main:app --host 0.0.0.0 --port 8000 --reload &
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
