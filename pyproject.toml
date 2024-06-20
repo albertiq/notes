@@ -8,7 +8,7 @@ cache-dir = "/tmp/ruff-cache"
 
 [tool.ruff.lint.isort]
 section-order = ["third-party", "first-party", "local-folder"]
-no-lines-before = ["third-party"]
+#no-lines-before = ["third-party"]
 
 [tool.ruff.lint.extend-per-file-ignores]
 "tests/*.py" = ["ANN401", "S101", "S311"]
